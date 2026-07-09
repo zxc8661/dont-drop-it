@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#3A4A5A" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="heart" x1="86" y1="76" x2="170" y2="184" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF8A8A"/>
+      <stop offset="1" stop-color="#FF6B6B"/>
+    </linearGradient>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M76 126C44 112 34 80 54 60C74 40 104 52 118 78C132 52 164 40 184 62C204 84 192 116 160 144L118 184Z" fill="url(#heart)"/>
+    <path d="M74 126C44 138 26 158 22 190C54 190 82 172 100 148Z" fill="#FFFFFF"/>
+    <path d="M88 132C58 144 44 158 38 176" stroke="#5CC6F0" stroke-width="8" stroke-linecap="round"/>
+    <path d="M168 126C200 138 218 158 222 190C190 190 162 172 144 148Z" fill="#FFFFFF"/>
+    <path d="M154 132C184 144 198 158 204 176" stroke="#5CC6F0" stroke-width="8" stroke-linecap="round"/>
+    <path d="M92 86C104 72 122 82 126 98" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity="0.45"/>
+  </g>
+  <path d="M54 34L61 50L78 56L61 62L54 78L47 62L30 56L47 50Z" fill="#FFD93D"/>
+  <path d="M202 38L208 52L222 58L208 64L202 78L196 64L182 58L196 52Z" fill="#FFD93D"/>
+  <path d="M214 128L219 140L232 145L219 150L214 162L209 150L196 145L209 140Z" fill="#C9F2E3"/>
+</svg>

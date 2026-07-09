@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="88" viewBox="0 0 280 88">
+  <defs><filter id="shadow" x="-20%" y="-30%" width="140%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#3A4A5A" flood-opacity="0.12"/></filter></defs>
+  <rect x="8" y="8" width="264" height="72" rx="36" fill="#FFFFFF" stroke="#BDE9FA" stroke-width="4" filter="url(#shadow)"/>
+  <path d="M83 38H121L116 64H88Z" fill="#C9F2E3" stroke="#3A4A5A" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M94 38C94 27 110 27 110 38" fill="none" stroke="#3A4A5A" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="116" cy="30" r="8" fill="#FFD93D"/>
+  <text x="163" y="54" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="28" font-weight="800" fill="#3A4A5A">상점</text>
+</svg>
