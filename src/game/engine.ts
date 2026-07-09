@@ -1,6 +1,6 @@
 import {
   BEAT_BPM,
-  CEILING_Y,
+  CAM_LINE,
   FLOOR_TOP,
   GRAVITY,
   MAX_DOWN_SPEED,
@@ -15,15 +15,15 @@ import {
   COMBO_WINDOW,
   NEAR_BONUS,
   NEAR_MARGIN,
-  SCORE_RATE,
+  SCORE_PER_PX,
   BIRD_R,
   BIRD_SPEED_MAX,
   BIRD_SPEED_MIN,
-  PARK_TIME,
-  SKY_TIME,
-  STRATO_TIME,
-  SPACE_TIME,
-  STAGE_FADE,
+  PARK_ALT,
+  SKY_ALT,
+  STRATO_ALT,
+  SPACE_ALT,
+  ALT_FADE,
   PLANE_MIN_GAP,
   PLANE_MAX_GAP,
   PLANE_SPEED,
@@ -61,6 +61,7 @@ export function createState(best: number, variant: PaperVariant = 'sheet'): Game
   return {
     phase: 'ready',
     time: 0,
+    alt: 0,
     score: 0,
     scoreAcc: 0,
     combo: 0,
@@ -95,10 +96,11 @@ export function createState(best: number, variant: PaperVariant = 'sheet'): Game
   }
 }
 
-// startTime: 개발용으로 특정 스테이지 시각부터 시작(기본 0 = 방).
-export function startGame(s: GameState, startTime = 0): void {
+// startAlt: 개발용으로 특정 스테이지 고도부터 시작(기본 0 = 방).
+export function startGame(s: GameState, startAlt = 0): void {
   s.phase = 'playing'
-  s.time = startTime
+  s.time = 0
+  s.alt = startAlt
   s.score = 0
   s.scoreAcc = 0
   s.combo = 0
@@ -115,6 +117,7 @@ export function startGame(s: GameState, startTime = 0): void {
   s.blowing = false
   s.particles = []
   s.shake = 0
+  s.scroll = startAlt
   s.birds = []
   s.planes = []
   s.meteors = []
@@ -158,28 +161,28 @@ function clamp(v: number, lo: number, hi: number): number {
   return v < lo ? lo : v > hi ? hi : v
 }
 
-// ── 스테이지 판정 ─────────────────────────────────────────
-export function stageOf(t: number): Stage {
-  if (t >= SPACE_TIME) return 'space'
-  if (t >= STRATO_TIME) return 'strato'
-  if (t >= SKY_TIME) return 'sky'
-  if (t >= PARK_TIME) return 'park'
+// ── 스테이지 판정 (고도 기반) ─────────────────────────────
+export function stageOf(alt: number): Stage {
+  if (alt >= SPACE_ALT) return 'space'
+  if (alt >= STRATO_ALT) return 'strato'
+  if (alt >= SKY_ALT) return 'sky'
+  if (alt >= PARK_ALT) return 'park'
   return 'room'
 }
-function amountSince(t: number, start: number): number {
-  return clamp((t - start) / STAGE_FADE, 0, 1)
+function amountSince(alt: number, start: number): number {
+  return clamp((alt - start) / ALT_FADE, 0, 1)
 }
 export function parkAmount(s: GameState): number {
-  return amountSince(s.time, PARK_TIME)
+  return amountSince(s.alt, PARK_ALT)
 }
 export function skyAmount(s: GameState): number {
-  return amountSince(s.time, SKY_TIME)
+  return amountSince(s.alt, SKY_ALT)
 }
 export function stratoAmount(s: GameState): number {
-  return amountSince(s.time, STRATO_TIME)
+  return amountSince(s.alt, STRATO_ALT)
 }
 export function spaceAmount(s: GameState): number {
-  return amountSince(s.time, SPACE_TIME)
+  return amountSince(s.alt, SPACE_ALT)
 }
 
 // 게임 오버 처리(모든 위협/바닥 공통)
@@ -272,7 +275,7 @@ function spawnUfo(s: GameState): void {
 
 // ── 위협 업데이트(스테이지별 스폰 + 각 위협 이동/충돌) ─────
 function updateHazards(s: GameState, dt: number): void {
-  const stage = stageOf(s.time)
+  const stage = stageOf(s.alt)
   s.hazardTimer -= dt
   if (s.hazardTimer <= 0) {
     if (stage === 'park') {
@@ -453,9 +456,6 @@ export function step(s: GameState, dtRaw: number): void {
   }
 
   s.time += dt
-  // 생존 기본 점수 누적 + 콤보 유지 타이머
-  s.scoreAcc += SCORE_RATE * dt
-  s.score = Math.floor(s.scoreAcc)
   if (s.comboTimer > 0) {
     s.comboTimer -= dt
     if (s.comboTimer <= 0) s.combo = 0
@@ -501,14 +501,15 @@ export function step(s: GameState, dtRaw: number): void {
   // 기울기: 수평 속도 + 낙하 속도 반영.
   s.rot = Math.max(-0.4, Math.min(0.4, s.vx / 260 + s.vy / 900))
 
-  // 배경 스크롤: 위로 뜰수록(=vy 음수) 빠르게 흐른다.
-  s.scroll += dt * (18 - s.vy * 0.06)
-
-  // 천장: 더 이상 위로 이동하지 않는다.
-  if (s.y < CEILING_Y) {
-    s.y = CEILING_Y
-    if (s.vy < 0) s.vy = 0
+  // 카메라: 종이가 CAM_LINE 위로 오르면 그만큼 고도가 상승하고 월드가 내려간다.
+  if (s.y < CAM_LINE) {
+    const climb = CAM_LINE - s.y
+    s.y = CAM_LINE
+    s.alt += climb
+    s.scoreAcc += climb * SCORE_PER_PX
   }
+  s.score = Math.floor(s.scoreAcc)
+  s.scroll = s.alt
 
   // 바닥 충돌 → 게임 오버.
   if (s.y + PAPER_H >= FLOOR_TOP) {

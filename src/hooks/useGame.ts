@@ -9,7 +9,7 @@ import { sfx } from '../audio'
 interface UiState {
   phase: Phase
   score: number
-  timeSec: number // 버틴 시간(초, 1자리)
+  heightM: number // 올라간 높이(m)
   combo: number
   niceCount: number
   niceBonus: number
@@ -17,7 +17,7 @@ interface UiState {
   best: number
   prevBest: number
   variant: PaperVariant
-  startStage: number // 개발용 시작 단계 시각(초)
+  startStage: number // 개발용 시작 단계 고도(px)
   breath: number // 남은 숨 0..1 (게이지)
   blowing: boolean
 }
@@ -33,7 +33,7 @@ export function useGame() {
   const [ui, setUi] = useState<UiState>({
     phase: 'ready',
     score: 0,
-    timeSec: 0,
+    heightM: 0,
     combo: 0,
     niceCount: 0,
     niceBonus: 0,
@@ -94,7 +94,7 @@ export function useGame() {
 
       const prevBest = prevBestRef.current
       const breath = Math.round(s.breath * 100) / 100
-      const timeSec = Math.max(0, Math.round((s.time - startStageRef.current) * 10) / 10)
+      const heightM = Math.floor(s.alt / 10)
       setUi((u) =>
         u.phase === s.phase &&
         u.score === s.score &&
@@ -104,7 +104,7 @@ export function useGame() {
         u.startStage === startStageRef.current &&
         u.breath === breath &&
         u.blowing === s.blowing &&
-        u.timeSec === timeSec &&
+        u.heightM === heightM &&
         u.combo === s.combo &&
         u.niceCount === s.niceCount &&
         u.muted === sfx.muted
@@ -112,7 +112,7 @@ export function useGame() {
           : {
               phase: s.phase,
               score: s.score,
-              timeSec,
+              heightM,
               combo: s.combo,
               niceCount: s.niceCount,
               niceBonus: s.niceBonus,

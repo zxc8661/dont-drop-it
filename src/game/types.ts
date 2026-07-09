@@ -57,6 +57,7 @@ export interface Particle {
 export interface GameState {
   phase: Phase
   time: number // 생존 시간(초)
+  alt: number // 올라간 고도(px). 바람으로 종이를 밀어올리면 증가
   score: number // 총점(생존 + 보너스)
   scoreAcc: number // 점수 누적(소수) — score는 floor(scoreAcc)
   combo: number // 연속 니어미스 콤보

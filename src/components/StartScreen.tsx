@@ -1,4 +1,4 @@
-import { PARK_TIME, SKY_TIME, SPACE_TIME, STRATO_TIME } from '../game/constants'
+import { PARK_ALT, SKY_ALT, SPACE_ALT, STRATO_ALT } from '../game/constants'
 import type { PaperVariant } from '../game/types'
 
 interface Props {
@@ -14,10 +14,10 @@ interface Props {
 
 const STAGES: { t: number; label: string }[] = [
   { t: 0, label: '방' },
-  { t: PARK_TIME, label: '공원' },
-  { t: SKY_TIME, label: '하늘' },
-  { t: STRATO_TIME, label: '성층권' },
-  { t: SPACE_TIME, label: '우주' },
+  { t: PARK_ALT, label: '공원' },
+  { t: SKY_ALT, label: '하늘' },
+  { t: STRATO_ALT, label: '성층권' },
+  { t: SPACE_ALT, label: '우주' },
 ]
 
 const VARIANTS: { key: PaperVariant; label: string }[] = [

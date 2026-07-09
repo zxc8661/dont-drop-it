@@ -2,7 +2,7 @@ interface Props {
   score: number
   best: number
   breath: number // 0..1 남은 숨
-  timeSec: number
+  heightM: number
   combo: number
   niceCount: number
   niceBonus: number
@@ -10,7 +10,7 @@ interface Props {
   onToggleMute: () => void
 }
 
-export function Hud({ score, best, breath, timeSec, combo, niceCount, niceBonus, muted, onToggleMute }: Props) {
+export function Hud({ score, best, breath, heightM, combo, niceCount, niceBonus, muted, onToggleMute }: Props) {
   const low = breath <= 0.25
   return (
     <div className="hud">
@@ -31,7 +31,7 @@ export function Hud({ score, best, breath, timeSec, combo, niceCount, niceBonus,
       </div>
 
       <div className="hud-score">{score}</div>
-      <div className="hud-time">{timeSec.toFixed(1)}초</div>
+      <div className="hud-time">고도 {heightM}m</div>
 
       {combo >= 2 && <div className="combo-badge">COMBO x{combo}</div>}
 

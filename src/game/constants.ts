@@ -13,13 +13,14 @@ export const MAX_UP_SPEED = -270
 export const MAX_DOWN_SPEED = 340
 
 // 월드 경계
-export const CEILING_Y = 8 // 종이 상단이 넘어갈 수 없는 선
+export const CAM_LINE = 90 // 종이가 이 화면 높이보다 위로 오르면 카메라가 따라가며 고도 상승
+export const CEILING_Y = 8 // (미사용) 예전 천장선
 export const FLOOR_TOP = 210 // 이 선에 종이가 닿으면 게임 오버 (얼굴/바닥 위치)
 
 // 종이 시작 위치
 export const PAPER_W = 28 // 바닥과 수평으로 누운 가로형 종이
 export const PAPER_H = 13
-export const PAPER_START_Y = 40
+export const PAPER_START_Y = 120
 
 // 좌우: 바람 각도에 따른 수평 이동
 export const WIND_X_ACCEL = 620 // 바람 활성 중 수평 가속도(방향 * 이 값)
@@ -28,14 +29,14 @@ export const X_DRAG = 1.8 // 수평 감쇠(공기 저항)
 export const WIND_STEER_RANGE = 14 // 종이 중심에서 이 거리(≈종이 절반)면 최대 좌우 힘(±1)
 export const WALL_MARGIN = 4 // 좌우 벽 여백
 
-// 스테이지 전환 시각(초): 방→공원→하늘→성층권→우주
-export const PARK_TIME = 10
-export const SKY_TIME = 60
-export const STRATO_TIME = 120
-export const SPACE_TIME = 200
-export const STAGE_FADE = 2.5 // 크로스페이드 시간(초)
-// (구버전 호환) 공원 페이드
-export const PARK_FADE = STAGE_FADE
+// 스테이지 전환 고도(px): 방→공원→하늘→성층권→우주. 바람으로 올라가며 도달.
+export const PARK_ALT = 200
+export const SKY_ALT = 900
+export const STRATO_ALT = 2200
+export const SPACE_ALT = 4200
+export const ALT_FADE = 250 // 크로스페이드 구간(px)
+// 점수: 올라간 높이(px)당 점수
+export const SCORE_PER_PX = 0.2
 
 // 새 (공원에서 좌↔우로 날아다님)
 export const BIRD_MIN_GAP = 1.6 // 스폰 최소 간격(초)
