@@ -17,6 +17,7 @@ interface UiState {
   best: number
   prevBest: number
   variant: PaperVariant
+  startStage: number // 개발용 시작 단계 시각(초)
   breath: number // 남은 숨 0..1 (게이지)
   blowing: boolean
 }
@@ -26,6 +27,7 @@ export function useGame() {
   const stateRef = useRef<GameState>(createState(loadBest()))
   const savedForRef = useRef(false)
   const evRef = useRef({ hit: 0, bird: 0, nice: 0 })
+  const startStageRef = useRef(0) // 개발용 시작 스테이지 시각
   const prevBestRef = useRef(stateRef.current.best)
 
   const [ui, setUi] = useState<UiState>({
@@ -39,6 +41,7 @@ export function useGame() {
     best: stateRef.current.best,
     prevBest: stateRef.current.best,
     variant: 'sheet',
+    startStage: 0,
     breath: 1,
     blowing: false,
   })
@@ -91,13 +94,14 @@ export function useGame() {
 
       const prevBest = prevBestRef.current
       const breath = Math.round(s.breath * 100) / 100
-      const timeSec = Math.round(s.time * 10) / 10
+      const timeSec = Math.max(0, Math.round((s.time - startStageRef.current) * 10) / 10)
       setUi((u) =>
         u.phase === s.phase &&
         u.score === s.score &&
         u.best === s.best &&
         u.prevBest === prevBest &&
         u.variant === s.variant &&
+        u.startStage === startStageRef.current &&
         u.breath === breath &&
         u.blowing === s.blowing &&
         u.timeSec === timeSec &&
@@ -116,6 +120,7 @@ export function useGame() {
               best: s.best,
               prevBest,
               variant: s.variant,
+              startStage: startStageRef.current,
               breath,
               blowing: s.blowing,
             },
@@ -131,7 +136,7 @@ export function useGame() {
     savedForRef.current = false
     prevBestRef.current = stateRef.current.best
     evRef.current = { hit: 0, bird: 0, nice: 0 }
-    startGame(stateRef.current)
+    startGame(stateRef.current, startStageRef.current)
     sfx.click()
   }, [])
 
@@ -153,7 +158,7 @@ export function useGame() {
     savedForRef.current = false
     prevBestRef.current = stateRef.current.best
     evRef.current = { hit: 0, bird: 0, nice: 0 }
-    startGame(stateRef.current)
+    startGame(stateRef.current, startStageRef.current)
     sfx.click()
   }, [])
 
@@ -175,6 +180,12 @@ export function useGame() {
     stateRef.current.variant = variant
   }, [])
 
+  // 개발용: 시작 스테이지(시각) 선택
+  const chooseStage = useCallback((t: number) => {
+    startStageRef.current = t
+    setUi((u) => ({ ...u, startStage: t }))
+  }, [])
+
   return {
     canvasRef,
     ...ui,
@@ -185,6 +196,7 @@ export function useGame() {
     retry,
     home,
     chooseVariant,
+    chooseStage,
     toggleMute,
   }
 }

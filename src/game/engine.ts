@@ -95,9 +95,10 @@ export function createState(best: number, variant: PaperVariant = 'sheet'): Game
   }
 }
 
-export function startGame(s: GameState): void {
+// startTime: 개발용으로 특정 스테이지 시각부터 시작(기본 0 = 방).
+export function startGame(s: GameState, startTime = 0): void {
   s.phase = 'playing'
-  s.time = 0
+  s.time = startTime
   s.score = 0
   s.scoreAcc = 0
   s.combo = 0

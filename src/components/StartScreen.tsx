@@ -1,13 +1,24 @@
+import { PARK_TIME, SKY_TIME, SPACE_TIME, STRATO_TIME } from '../game/constants'
 import type { PaperVariant } from '../game/types'
 
 interface Props {
   best: number
   variant: PaperVariant
+  startStage: number
   muted: boolean
   onToggleMute: () => void
   onChoose: (v: PaperVariant) => void
+  onChooseStage: (t: number) => void
   onStart: () => void
 }
+
+const STAGES: { t: number; label: string }[] = [
+  { t: 0, label: '방' },
+  { t: PARK_TIME, label: '공원' },
+  { t: SKY_TIME, label: '하늘' },
+  { t: STRATO_TIME, label: '성층권' },
+  { t: SPACE_TIME, label: '우주' },
+]
 
 const VARIANTS: { key: PaperVariant; label: string }[] = [
   { key: 'sheet', label: 'A4' },
@@ -16,7 +27,7 @@ const VARIANTS: { key: PaperVariant; label: string }[] = [
   { key: 'memo', label: '메모지' },
 ]
 
-export function StartScreen({ best, variant, muted, onToggleMute, onChoose, onStart }: Props) {
+export function StartScreen({ best, variant, startStage, muted, onToggleMute, onChoose, onChooseStage, onStart }: Props) {
   return (
     <div className="overlay start">
       <button className="mute-btn" onClick={onToggleMute} aria-label="소리">
@@ -42,6 +53,21 @@ export function StartScreen({ best, variant, muted, onToggleMute, onChoose, onSt
               onClick={() => onChoose(v.key)}
             >
               {v.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="variant-pick">
+        <p className="pick-label">시작 단계 <span className="dev-tag">개발용</span></p>
+        <div className="pick-row">
+          {STAGES.map((st) => (
+            <button
+              key={st.t}
+              className={'pick-btn' + (startStage === st.t ? ' active' : '')}
+              onClick={() => onChooseStage(st.t)}
+            >
+              {st.label}
             </button>
           ))}
         </div>

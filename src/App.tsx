@@ -104,9 +104,11 @@ export default function App() {
           <StartScreen
             best={g.best}
             variant={g.variant}
+            startStage={g.startStage}
             muted={g.muted}
             onToggleMute={g.toggleMute}
             onChoose={g.chooseVariant}
+            onChooseStage={g.chooseStage}
             onStart={g.start}
           />
         )}
