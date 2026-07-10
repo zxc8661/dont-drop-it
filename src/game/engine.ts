@@ -501,12 +501,20 @@ export function step(s: GameState, dtRaw: number): void {
   // 기울기: 수평 속도 + 낙하 속도 반영.
   s.rot = Math.max(-0.4, Math.min(0.4, s.vx / 260 + s.vy / 900))
 
-  // 카메라: 종이가 CAM_LINE 위로 오르면 그만큼 고도가 상승하고 월드가 내려간다.
+  // 카메라: 종이가 CAM_LINE 위로 오르면 "부드럽게" 따라간다(높이 고정 없음).
+  // 세게 불면 종이가 위로 떴다가 카메라가 천천히 따라잡으며 고도가 오른다.
   if (s.y < CAM_LINE) {
-    const climb = CAM_LINE - s.y
-    s.y = CAM_LINE
+    const climb = (CAM_LINE - s.y) * (1 - Math.pow(0.015, dt))
+    s.y += climb
     s.alt += climb
     s.scoreAcc += climb * SCORE_PER_PX
+  }
+  // 화면 최상단 안전 클램프(밖으로 못 나가게)
+  if (s.y < 6) {
+    const d = 6 - s.y
+    s.y = 6
+    s.alt += d
+    s.scoreAcc += d * SCORE_PER_PX
   }
   s.score = Math.floor(s.scoreAcc)
   s.scroll = s.alt

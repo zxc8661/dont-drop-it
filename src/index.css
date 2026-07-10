@@ -204,13 +204,32 @@ body {
   padding: 3px 8px;
   border: 2px solid #22303f;
 }
-.breath-wrap {
+.hud-tl {
   position: absolute;
-  top: 10px;
+  top: 8px;
   left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.breath-wrap {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+.hud-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.hud-stat b {
+  font-size: 20px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #ff9a4d, 3px 3px 0 rgba(0, 0, 0, 0.18);
+}
+.hud-stat span {
+  font-size: 11px;
+  color: #33475a;
 }
 .breath-label {
   font-size: 10px;

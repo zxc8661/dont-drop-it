@@ -19,23 +19,25 @@ export function Hud({ score, best, breath, heightM, combo, niceCount, niceBonus,
       </button>
       <div className="hud-best">BEST {best}</div>
 
-      {/* 숨 게이지: 누르면 줄고 떼면 회복 */}
-      <div className="breath-wrap">
-        <div className="breath-label">숨</div>
-        <div className="breath-bar">
-          <div
-            className={'breath-fill' + (low ? ' low' : '')}
-            style={{ width: `${Math.round(breath * 100)}%` }}
-          />
+      {/* 좌상단: 숨 게이지 + 점수/고도(작게) */}
+      <div className="hud-tl">
+        <div className="breath-wrap">
+          <div className="breath-label">숨</div>
+          <div className="breath-bar">
+            <div
+              className={'breath-fill' + (low ? ' low' : '')}
+              style={{ width: `${Math.round(breath * 100)}%` }}
+            />
+          </div>
+        </div>
+        <div className="hud-stat">
+          <b>{score}</b>
+          <span>고도 {heightM}m</span>
         </div>
       </div>
 
-      <div className="hud-score">{score}</div>
-      <div className="hud-time">고도 {heightM}m</div>
-
       {combo >= 2 && <div className="combo-badge">COMBO x{combo}</div>}
 
-      {/* 니어미스 플래시: niceCount가 바뀔 때마다 애니메이션 재생 */}
       {niceCount > 0 && (
         <div key={niceCount} className="nice-flash">
           아슬아슬! +{niceBonus}
