@@ -9,7 +9,6 @@ import { sfx } from '../audio'
 interface UiState {
   phase: Phase
   score: number
-  heightM: number // 올라간 높이(m)
   combo: number
   niceCount: number
   niceBonus: number
@@ -33,7 +32,6 @@ export function useGame() {
   const [ui, setUi] = useState<UiState>({
     phase: 'ready',
     score: 0,
-    heightM: 0,
     combo: 0,
     niceCount: 0,
     niceBonus: 0,
@@ -94,7 +92,6 @@ export function useGame() {
 
       const prevBest = prevBestRef.current
       const breath = Math.round(s.breath * 100) / 100
-      const heightM = Math.floor(s.alt / 10)
       setUi((u) =>
         u.phase === s.phase &&
         u.score === s.score &&
@@ -104,7 +101,6 @@ export function useGame() {
         u.startStage === startStageRef.current &&
         u.breath === breath &&
         u.blowing === s.blowing &&
-        u.heightM === heightM &&
         u.combo === s.combo &&
         u.niceCount === s.niceCount &&
         u.muted === sfx.muted
@@ -112,7 +108,6 @@ export function useGame() {
           : {
               phase: s.phase,
               score: s.score,
-              heightM,
               combo: s.combo,
               niceCount: s.niceCount,
               niceBonus: s.niceBonus,

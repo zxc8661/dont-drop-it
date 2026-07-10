@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="280" height="88" viewBox="0 0 280 88">
-  <defs><filter id="shadow" x="-20%" y="-30%" width="140%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#3A4A5A" flood-opacity="0.12"/></filter></defs>
-  <rect x="8" y="8" width="264" height="72" rx="36" fill="#C9F2E3" filter="url(#shadow)"/>
-  <path d="M74 44C74 29 86 22 99 25C111 28 118 40 114 52C110 64 96 70 84 64" fill="none" stroke="#5CC6F0" stroke-width="7" stroke-linecap="round"/>
-  <path d="M82 23L98 24L88 37" fill="none" stroke="#5CC6F0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="157" y="54" text-anchor="middle" font-family="Pretendard, 'Noto Sans KR', sans-serif" font-size="28" font-weight="800" fill="#3A4A5A">다시하기</text>
-</svg>

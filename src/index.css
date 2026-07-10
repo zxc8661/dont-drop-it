@@ -227,10 +227,6 @@ body {
   color: #fff;
   text-shadow: 2px 2px 0 #ff9a4d, 3px 3px 0 rgba(0, 0, 0, 0.18);
 }
-.hud-stat span {
-  font-size: 11px;
-  color: #33475a;
-}
 .breath-label {
   font-size: 10px;
   color: #33475a;
@@ -255,25 +251,6 @@ body {
   50% {
     opacity: 0.5;
   }
-}
-.hud-score {
-  position: absolute;
-  top: 26px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: clamp(40px, 16vw, 64px);
-  color: #fff;
-  text-shadow: 3px 3px 0 #ff9a4d, 6px 6px 0 rgba(0, 0, 0, 0.18);
-}
-.hud-time {
-  position: absolute;
-  top: calc(26px + 15vw);
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 13px;
-  color: #33475a;
 }
 .mute-btn {
   position: absolute;

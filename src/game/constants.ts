@@ -5,7 +5,7 @@ export const VH = 240
 // 물리 (단위: 가상픽셀, 초)
 export const GRAVITY = 300 // 아래 방향 가속도
 export const WIND_ACCEL = -860 // 바람 활성 중 위 방향 가속도
-export const WIND_DURATION = 0.2 // (미사용) 예전 원샷 바람 지속시간
+
 // 숨 게이지(0..1). 누르면 빠르게 소진, 떼면 천천히 회복.
 export const BREATH_DRAIN = 0.42 // 초당 소진량 → 가득참에서 약 2.4초면 바닥
 export const BREATH_REGEN = 0.26 // 초당 회복량 → 바닥에서 가득참까지 약 3.8초
@@ -14,12 +14,14 @@ export const MAX_DOWN_SPEED = 340
 
 // 월드 경계
 export const CAM_LINE = 90 // 종이가 이 화면 높이보다 위로 오르면 카메라가 따라가며 고도 상승
-export const CEILING_Y = 8 // (미사용) 예전 천장선
 export const FLOOR_TOP = 210 // 이 선에 종이가 닿으면 게임 오버 (얼굴/바닥 위치)
 
 // 종이 시작 위치
 export const PAPER_W = 28 // 바닥과 수평으로 누운 가로형 종이
 export const PAPER_H = 13
+// 충돌 판정 박스(그림보다 작게 = 관대하게)
+export const PAPER_HIT_W = 16
+export const PAPER_HIT_H = 8
 export const PAPER_START_Y = 120
 
 // 좌우: 바람 각도에 따른 수평 이동
@@ -35,8 +37,11 @@ export const SKY_ALT = 2500
 export const STRATO_ALT = 6000
 export const SPACE_ALT = 12000
 export const ALT_FADE = 500 // 크로스페이드 구간(px)
-// 점수: 올라간 높이(px)당 점수
-export const SCORE_PER_PX = 0.2
+// 점수: 올라간 높이(px)당 점수 (10px=1m=1점) + 니어미스 보너스
+export const SCORE_PER_PX = 0.1
+
+// 난이도 램프: 고도가 오를수록 위협 스폰 간격이 좁아진다(SPACE_ALT에서 최대 45% 단축)
+export const HAZARD_RAMP_CUT = 0.45
 
 // 새 (공원에서 좌↔우로 날아다님)
 export const BIRD_MIN_GAP = 1.6 // 스폰 최소 간격(초)
@@ -56,10 +61,10 @@ export const PLANE_R = 8
 // 운석 (성층권): 대각선으로 떨어지고 랜덤하게 2개로 분열
 export const METEOR_MIN_GAP = 1.3
 export const METEOR_MAX_GAP = 2.6
-export const METEOR_VY = 95
-export const METEOR_VX = 45
+export const METEOR_VY = 76 // 20% 감속
+export const METEOR_VX = 36 // 20% 감속
 export const METEOR_R = 6
-export const METEOR_SPLIT_CHANCE = 1.1 // 초당 분열 확률(중간 구간에서)
+export const METEOR_SPLIT_CHANCE = 0.45 // 초당 분열 확률(하향: 덜 갈라짐)
 
 // UFO (우주): 좌/우 끝에 고정 등장, 빔 3~4회 쏘고 떠남
 export const UFO_MIN_GAP = 2.4

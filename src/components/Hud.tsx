@@ -2,7 +2,6 @@ interface Props {
   score: number
   best: number
   breath: number // 0..1 남은 숨
-  heightM: number
   combo: number
   niceCount: number
   niceBonus: number
@@ -10,7 +9,7 @@ interface Props {
   onToggleMute: () => void
 }
 
-export function Hud({ score, best, breath, heightM, combo, niceCount, niceBonus, muted, onToggleMute }: Props) {
+export function Hud({ score, best, breath, combo, niceCount, niceBonus, muted, onToggleMute }: Props) {
   const low = breath <= 0.25
   return (
     <div className="hud">
@@ -19,7 +18,7 @@ export function Hud({ score, best, breath, heightM, combo, niceCount, niceBonus,
       </button>
       <div className="hud-best">BEST {best}</div>
 
-      {/* 좌상단: 숨 게이지 + 점수/고도(작게) */}
+      {/* 좌상단: 숨 게이지 + 점수(작게) */}
       <div className="hud-tl">
         <div className="breath-wrap">
           <div className="breath-label">숨</div>
@@ -32,7 +31,6 @@ export function Hud({ score, best, breath, heightM, combo, niceCount, niceBonus,
         </div>
         <div className="hud-stat">
           <b>{score}</b>
-          <span>고도 {heightM}m</span>
         </div>
       </div>
 

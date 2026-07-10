@@ -91,7 +91,6 @@ export default function App() {
             score={g.score}
             best={g.best}
             breath={g.breath}
-            heightM={g.heightM}
             combo={g.combo}
             niceCount={g.niceCount}
             niceBonus={g.niceBonus}
@@ -117,7 +116,6 @@ export default function App() {
           <GameOverScreen
             score={g.score}
             best={g.best}
-            heightM={g.heightM}
             isNewBest={g.score > 0 && g.score > g.prevBest}
             onRetry={g.retry}
             onHome={g.home}

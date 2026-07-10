@@ -1,13 +1,12 @@
 interface Props {
   score: number
   best: number
-  heightM: number
   isNewBest: boolean
   onRetry: () => void
   onHome: () => void
 }
 
-export function GameOverScreen({ score, best, heightM, isNewBest, onRetry, onHome }: Props) {
+export function GameOverScreen({ score, best, isNewBest, onRetry, onHome }: Props) {
   return (
     <div className="overlay gameover">
       <h2 className="go-title">GAME OVER</h2>
@@ -18,10 +17,6 @@ export function GameOverScreen({ score, best, heightM, isNewBest, onRetry, onHom
         <div className="score-row">
           <span>점수</span>
           <b>{score}</b>
-        </div>
-        <div className="score-row muted">
-          <span>올라간 높이</span>
-          <b>{heightM}m</b>
         </div>
         <div className="score-row muted">
           <span>최고 점수</span>

@@ -1,4 +1,4 @@
-import { BEAM_HALF, CEILING_Y, FLOOR_TOP, PAPER_H, PAPER_W, VH, VW } from './constants'
+import { BEAM_HALF, FLOOR_TOP, PAPER_H, PAPER_W, VH, VW } from './constants'
 import { parkAmount, skyAmount, spaceAmount, stratoAmount } from './engine'
 import { fillCircle, fillEllipse, hline, px, rect, type Ctx } from './pixel'
 import type { GameState, PaperVariant } from './types'
@@ -513,7 +513,7 @@ interface FlutterPal {
   lines?: string
 }
 
-// 가로로 누운 종이를 사인파로 펄럭이게 그린다 (원단 느낌 음영).
+// 가로로 누운 종이 시트: 또렷한 사각형 + 접힌 모서리(우상단) + 줄무늬 + 그림자 + 완만한 페이지 컬.
 function drawFlutter(
   ctx: Ctx,
   x: number,
@@ -524,20 +524,35 @@ function drawFlutter(
   tilt: number,
   pal: FlutterPal,
 ): void {
+  const FOLD = 5 // 접힌 모서리 크기(px)
+  // 완만한 저주파 컬(과한 물결 대신 시트 전체가 살짝 휘는 정도)
+  const topAt = (c: number) => y + Math.sin(c * 0.16 + phase * 0.8) * 1.2 + (c - w / 2) * tilt
+
+  // 바닥 그림자 (시트와 같은 컬을 따라 우하단으로 오프셋)
+  ctx.globalAlpha = 0.15
+  for (let c = 0; c < w; c++) rect(ctx, x + c + 2, topAt(c) + 3, 1, h, '#22303f')
+  ctx.globalAlpha = 1
+
   for (let c = 0; c < w; c++) {
-    const wave = Math.sin(c * 0.55 + phase) * 2.2 + Math.sin(c * 0.9 - phase * 1.3) * 1.1
-    const slope = Math.cos(c * 0.55 + phase)
-    const top = y + wave + (c - w / 2) * tilt
-    // 슬로프에 따라 음영: 위로 향한 면은 밝게, 아래로 꺾인 면은 어둡게
-    const shade = slope > 0.35 ? pal.hi : slope < -0.35 ? pal.lo : pal.mid
-    rect(ctx, x + c, top, 1, h, shade)
-    // 위/아래 테두리
-    px(ctx, x + c, top, pal.hi)
-    px(ctx, x + c, top + h - 1, pal.edge)
-    // 가로 줄무늬(메모/영수증)
+    const top = topAt(c)
+    const slope = Math.cos(c * 0.16 + phase * 0.8)
+    // 우상단 접힘: 대각선 위(cut px)는 잘려서 배경이 보인다
+    const cut = Math.max(0, c - (w - 1 - FOLD))
+    // 본체: 컬의 내리막 면만 살짝 어둡게 (낮은 대비로 종이 질감 유지)
+    rect(ctx, x + c, top + cut, 1, h - cut, slope < -0.4 ? pal.mid : pal.hi)
+    // 줄무늬(메모/영수증)
     if (pal.lines) {
-      for (let r = 3; r < h - 2; r += 3) px(ctx, x + c, top + r, pal.lines)
+      for (let r = 4; r < h - 2; r += 4) if (r > cut) px(ctx, x + c, top + r, pal.lines)
     }
+    // 접힌 뒷면(삼각형 플랩) + 잘린 대각선
+    if (cut > 0) {
+      rect(ctx, x + c, top + cut, 1, FOLD - cut + 1, pal.lo)
+      px(ctx, x + c, top + cut, pal.edge)
+    }
+    // 테두리: 윗변/아랫변 + 좌우 세로변
+    if (cut === 0) px(ctx, x + c, top, pal.mid)
+    px(ctx, x + c, top + h - 1, pal.edge)
+    if (c === 0 || c === w - 1) rect(ctx, x + c, top + cut, 1, h - cut, pal.edge)
   }
 }
 
@@ -575,14 +590,6 @@ export function drawParticles(ctx: Ctx, s: GameState): void {
   ctx.globalAlpha = 1
 }
 
-export function drawCeilingHint(ctx: Ctx, s: GameState): void {
-  if (s.y <= CEILING_Y + 4) {
-    ctx.globalAlpha = 0.5
-    for (let x = 0; x < VW; x += 6) rect(ctx, x, 0, 3, 2, '#ff6b6b')
-    ctx.globalAlpha = 1
-  }
-}
-
 // 위험 경고: 종이가 바닥에 가까우면 붉은 진동 표시
 export function drawDangerHint(ctx: Ctx, s: GameState): void {
   const gap = FLOOR_TOP - (s.y + PAPER_H)
@@ -606,7 +613,6 @@ export function renderFrame(ctx: Ctx, s: GameState): void {
   drawMeteors(ctx, s)
   drawUfos(ctx, s)
   drawPaper(ctx, s)
-  drawCeilingHint(ctx, s)
 }
 
 // ── 유틸 ──────────────────────────────────────────────────

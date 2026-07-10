@@ -5,7 +5,10 @@ import {
   GRAVITY,
   MAX_DOWN_SPEED,
   MAX_UP_SPEED,
+  HAZARD_RAMP_CUT,
   PAPER_H,
+  PAPER_HIT_H,
+  PAPER_HIT_W,
   PAPER_START_Y,
   PAPER_W,
   BREATH_DRAIN,
@@ -199,14 +202,14 @@ function endRun(s: GameState, sparkX: number, sparkY: number): void {
 
 const gap = (a: number, b: number) => a + Math.random() * (b - a)
 
-// 충돌/니어미스 공통 판정 (r=위협 반경)
+// 충돌/니어미스 공통 판정 (r=위협 반경). 판정 박스는 그림보다 작게(관대하게).
 type NearObj = { nearScored: boolean }
 function checkHit(s: GameState, ox: number, oy: number, r: number, obj: NearObj): 'hit' | 'near' | null {
   const px = s.x + PAPER_W / 2
   const py = s.y + PAPER_H / 2
-  const hx = Math.abs(ox - px) < r + PAPER_W / 2
+  const hx = Math.abs(ox - px) < r + PAPER_HIT_W / 2
   const dy = Math.abs(oy - py)
-  const hitY = r + PAPER_H / 2
+  const hitY = r + PAPER_HIT_H / 2
   if (hx && dy < hitY) return 'hit'
   if (!obj.nearScored && hx && dy >= hitY && dy < hitY + NEAR_MARGIN) return 'near'
   return null
@@ -278,18 +281,20 @@ function updateHazards(s: GameState, dt: number): void {
   const stage = stageOf(s.alt)
   s.hazardTimer -= dt
   if (s.hazardTimer <= 0) {
+    // 난이도 램프: 고도에 비례해 스폰 간격 단축(최대 HAZARD_RAMP_CUT)
+    const ramp = 1 - HAZARD_RAMP_CUT * clamp(s.alt / SPACE_ALT, 0, 1)
     if (stage === 'park') {
       spawnBird(s)
-      s.hazardTimer = gap(BIRD_MIN_GAP, BIRD_MAX_GAP)
+      s.hazardTimer = gap(BIRD_MIN_GAP, BIRD_MAX_GAP) * ramp
     } else if (stage === 'sky') {
       spawnPlane(s)
-      s.hazardTimer = gap(PLANE_MIN_GAP, PLANE_MAX_GAP)
+      s.hazardTimer = gap(PLANE_MIN_GAP, PLANE_MAX_GAP) * ramp
     } else if (stage === 'strato') {
       spawnMeteor(s)
-      s.hazardTimer = gap(METEOR_MIN_GAP, METEOR_MAX_GAP)
+      s.hazardTimer = gap(METEOR_MIN_GAP, METEOR_MAX_GAP) * ramp
     } else if (stage === 'space') {
       spawnUfo(s)
-      s.hazardTimer = gap(UFO_MIN_GAP, UFO_MAX_GAP)
+      s.hazardTimer = gap(UFO_MIN_GAP, UFO_MAX_GAP) * ramp
     } else {
       s.hazardTimer = 1
     }
