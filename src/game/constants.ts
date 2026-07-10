@@ -66,21 +66,26 @@ export const METEOR_VX = 36 // 20% 감속
 export const METEOR_R = 6
 export const METEOR_SPLIT_CHANCE = 0.45 // 초당 분열 확률(하향: 덜 갈라짐)
 
-// UFO (우주): 좌/우 끝에 고정 등장, 빔 3~4회 쏘고 떠남
-export const UFO_MIN_GAP = 2.4
-export const UFO_MAX_GAP = 4.2
-export const UFO_SHOTS_MIN = 3
-export const UFO_SHOTS_MAX = 4
-export const UFO_CHARGE = 0.7 // 빔 예고(차징) 시간
+// UFO (우주): 웨이브로 등장(초반 1~3기, 깊은 우주부터 2~5기), 빔 1~2회 쏘고 떠남
+export const UFO_MIN_GAP = 3.2 // 웨이브 간격(초)
+export const UFO_MAX_GAP = 5.5
+export const UFO_SHOTS_MIN = 1
+export const UFO_SHOTS_MAX = 2
+export const UFO_CHARGE = 1.1 // 빔 예고(차징) 시간 — 상향
 export const UFO_FIRE = 0.32 // 빔 발사(치명) 시간
-export const UFO_IDLE = 0.55 // 빔 사이 간격
+export const UFO_IDLE = 0.7 // 빔 사이 간격
 export const UFO_R = 10
 export const BEAM_HALF = 4 // 빔 반두께
+export const UFO_WAVE_EARLY_MIN = 1 // 초반 웨이브 크기
+export const UFO_WAVE_EARLY_MAX = 3
+export const UFO_WAVE_LATE_MIN = 2 // 깊은 우주 웨이브 크기
+export const UFO_WAVE_LATE_MAX = 5
+export const SPACE_DEEP_ALT = 15000 // 이 고도부터 웨이브 2~5기
+export const UFO_Y_SEP = 26 // UFO 간 최소 수직 간격(스폰·동시발사 금지 밴드)
 
 // 새와 부딪히면 게임 오버 (아슬하게 스치면 니어미스 보너스)
 
-// 점수: 생존 포인트 + 니어미스/콤보 보너스
-export const SCORE_RATE = 10 // 초당 기본 생존 점수
+// 니어미스/콤보 보너스
 export const NEAR_MARGIN = 10 // 충돌은 안 하고 이 거리 안으로 스치면 니어미스
 export const NEAR_BONUS = 30 // 니어미스 기본 보너스
 export const COMBO_WINDOW = 2.5 // 콤보 유지 시간(초)

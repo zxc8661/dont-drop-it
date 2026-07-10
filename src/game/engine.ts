@@ -48,6 +48,12 @@ import {
   UFO_IDLE,
   UFO_R,
   BEAM_HALF,
+  UFO_WAVE_EARLY_MIN,
+  UFO_WAVE_EARLY_MAX,
+  UFO_WAVE_LATE_MIN,
+  UFO_WAVE_LATE_MAX,
+  SPACE_DEEP_ALT,
+  UFO_Y_SEP,
   MAX_X_SPEED,
   WALL_MARGIN,
   WIND_STEER_RANGE,
@@ -261,19 +267,38 @@ function spawnMeteor(s: GameState): void {
   })
   s.spawnCount++
 }
+// UFO 웨이브 스폰: 초반 우주는 1~3기, SPACE_DEEP_ALT부터 2~5기.
+// 서로(기존 UFO 포함) 최소 UFO_Y_SEP 이상 높이를 벌려 배치한다.
 function spawnUfo(s: GameState): void {
-  const side: 1 | -1 = Math.random() < 0.5 ? -1 : 1
-  const y = 40 + Math.random() * (FLOOR_TOP - 100)
-  s.ufos.push({
-    x: side < 0 ? 14 : VW - 14,
-    y,
-    side,
-    shotsLeft: UFO_SHOTS_MIN + Math.floor(Math.random() * (UFO_SHOTS_MAX - UFO_SHOTS_MIN + 1)),
-    phase: 'charge',
-    phaseT: UFO_CHARGE,
-    leaving: false,
-  })
-  s.spawnCount++
+  const deep = s.alt >= SPACE_DEEP_ALT
+  const min = deep ? UFO_WAVE_LATE_MIN : UFO_WAVE_EARLY_MIN
+  const max = deep ? UFO_WAVE_LATE_MAX : UFO_WAVE_EARLY_MAX
+  const count = min + Math.floor(Math.random() * (max - min + 1))
+  const usedYs = s.ufos.map((u) => u.y)
+  for (let i = 0; i < count; i++) {
+    let y = -1
+    // 겹치지 않는 높이 찾기(최대 12회 시도)
+    for (let tryN = 0; tryN < 12; tryN++) {
+      const cand = 40 + Math.random() * (FLOOR_TOP - 100)
+      if (usedYs.every((uy) => Math.abs(uy - cand) >= UFO_Y_SEP)) {
+        y = cand
+        break
+      }
+    }
+    if (y < 0) break // 자리가 없으면 이번 웨이브는 여기까지
+    usedYs.push(y)
+    const side: 1 | -1 = Math.random() < 0.5 ? -1 : 1
+    s.ufos.push({
+      x: side < 0 ? 14 : VW - 14,
+      y,
+      side,
+      shotsLeft: UFO_SHOTS_MIN + Math.floor(Math.random() * (UFO_SHOTS_MAX - UFO_SHOTS_MIN + 1)),
+      phase: 'idle',
+      phaseT: 0.2 + Math.random() * 0.9, // 순차적으로 차징 시작(동시 발사 방지)
+      leaving: false,
+    })
+    s.spawnCount++
+  }
 }
 
 // ── 위협 업데이트(스테이지별 스폰 + 각 위협 이동/충돌) ─────
@@ -398,8 +423,16 @@ function updateUfos(s: GameState, dt: number): void {
           u.phaseT = UFO_IDLE
         }
       } else {
-        u.phase = 'charge'
-        u.phaseT = UFO_CHARGE
+        // 비슷한 높이의 다른 UFO가 차징/발사 중이면 기다렸다가 쏜다
+        const conflict = s.ufos.some(
+          (o) => o !== u && !o.leaving && o.phase !== 'idle' && Math.abs(o.y - u.y) < UFO_Y_SEP,
+        )
+        if (conflict) {
+          u.phaseT = 0.25 // 잠시 대기 후 재확인
+        } else {
+          u.phase = 'charge'
+          u.phaseT = UFO_CHARGE
+        }
       }
     }
     // 발사 중이면 UFO 높이의 가로 빔이 치명적
